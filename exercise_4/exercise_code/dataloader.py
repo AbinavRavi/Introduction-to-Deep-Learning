@@ -3,6 +3,8 @@ import matplotlib.image as mpimg
 import pandas as pd
 import os
 import numpy as np
+from exercise_code.data_utils import get_keypoints
+from exercise_code.data_utils import get_image
 
 class FacialKeypointsDataset(Dataset):
     """Face Landmarks dataset."""
@@ -20,7 +22,6 @@ class FacialKeypointsDataset(Dataset):
         self.key_pts_frame.dropna(inplace=True)
         self.key_pts_frame.reset_index(drop=True, inplace=True)
         self.transform = transform
-       # self.root_dir = root_dir
 
     def __len__(self):
         ########################################################################
@@ -28,7 +29,6 @@ class FacialKeypointsDataset(Dataset):
         # Return the length of the dataset                                     #
         ########################################################################
         return len(self.key_pts_frame)
-        pass
         ########################################################################
         #                             END OF YOUR CODE                         #
         ########################################################################
@@ -40,20 +40,8 @@ class FacialKeypointsDataset(Dataset):
         # where the key, value should be like                                  #
         #        {'image': image of shape [C, H, W],                           #
         #         'keypoints': keypoints of shape [num_keypoints, 2]}          #
-        # You can use mpimg.imread(image path) to read out image data          #
         ########################################################################
-        img_name = os.path.join(self.key_pts_frame.iloc[idx,0])
-        image = io.imread(img_name)
-        key_pts = self.key_pts_frame.iloc[idx,1].as_matrix()
-        key_pts = key_pts_frame.astype('float').reshape(-1,2)
-        sample = {'image':image,'key_pts':key_pts}
-        if self.transform:
-            sample = self.transform(sample)
-
-        return sample
-
-        pass
-        
+        sample = {'image': np.array([get_image(idx, self.key_pts_frame)]), 'keypoints': get_keypoints(idx, self.key_pts_frame)}
         ########################################################################
         #                             END OF YOUR CODE                         #
         ########################################################################

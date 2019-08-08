@@ -44,6 +44,33 @@ class Solver(object):
         optim = self.optim(model.parameters(), **self.optim_args)
         self._reset_histories()
         iter_per_epoch = len(train_loader)
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model.to(device)
+
+        print('START TRAIN.')
+        ########################################################################
+        # TODO:                                                                #
+        # Write your own personal training method for our solver. In each      #
+        # epoch iter_per_epoch shuffled training batches are processed. The    #
+        # loss for each batch is stored in self.train_loss_history. Every      #
+        # log_nth iteration the loss is logged. After one epoch the training   #
+        # accuracy of the last mini batch is logged and stored in              #
+        # self.train_acc_history. We validate at the end of each epoch, log    #
+        # the result and store the accuracy of the entire validation set in    #
+        # self.val_acc_history.                                                #
+        #                                                                      #
+        # Your logging could like something like:                              #
+        #   ...                                                                #
+        #   [Iteration 700/4800] TRAIN loss: 1.452                             #
+        #   [Iteration 800/4800] TRAIN loss: 1.409                             #
+        #   [Iteration 900/4800] TRAIN loss: 1.374                             #
+        #   [Epoch 1/5] TRAIN acc/loss: 0.560/1.374                            #
+        #   [Epoch 1/5] VAL   acc/loss: 0.539/1.310                            #
+        #   ...                                                                #
+        ########################################################################
+        optim = self.optim(model.parameters(), **self.optim_args)
+        self._reset_histories()
+        iter_per_epoch = len(train_loader)
 
         if torch.cuda.is_available():
             model.cuda()
@@ -112,5 +139,7 @@ class Solver(object):
                                                                    num_epochs,
                                                                    val_acc,
                                                                    val_loss))
-
+        ########################################################################
+        #                             END OF YOUR CODE                         #
+        ########################################################################
         print('FINISH.')
